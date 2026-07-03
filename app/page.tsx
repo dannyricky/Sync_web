@@ -18,6 +18,18 @@ export default function Home() {
     };
   }, []);
 
+  // Debug: automatically open the modal shortly after the loader finishes
+  useEffect(() => {
+    if (!loading) {
+      const t = setTimeout(() => {
+        console.log("Debug: auto-opening auth modal for testing");
+        setAuthInitialTab("signup");
+        setAuthOpen(true);
+      }, 200);
+      return () => clearTimeout(t);
+    }
+  }, [loading]);
+
   return (
     <div className="page-root">
       {/* Loader overlay - only in DOM while loading */}
