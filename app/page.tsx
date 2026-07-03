@@ -7,11 +7,13 @@ export default function Home() {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setFadeOut(true), 3600); // start fade
-    const t2 = setTimeout(() => setLoading(false), 4000); // hide after 4s
+    // start fade slightly before the progress finishes so we get a smooth crossfade
+    const t1 = setTimeout(() => setFadeOut(true), 3600); // start fade at 3.6s
+    // fallback: if animationend doesn't fire for any reason, hide after 4.2s
+    const fallback = setTimeout(() => setLoading(false), 4200);
     return () => {
       clearTimeout(t1);
-      clearTimeout(t2);
+      clearTimeout(fallback);
     };
   }, []);
 
@@ -21,14 +23,22 @@ export default function Home() {
       <div className={`loader-overlay ${fadeOut ? "hidden" : ""}`} aria-hidden={!loading}>
         <div className="loader-inner">
           <div className="sync">SYNC</div>
+
           <div className="loader-bar" aria-hidden>
-            <div className="loader-progress" />
+            {/* animate this element from left to right over 4s */}
+            <div
+              className="loader-progress"
+              onAnimationEnd={() => {
+                // animation finished -> show content
+                setLoading(false);
+              }}
+            />
           </div>
         </div>
       </div>
 
       {/* Main site content */}
-      <div className="site-content" role="main" aria-labelledby="hero-heading">
+      <div className="site-content" role="main" aria-labelledby="hero-heading" style={{ display: loading ? "none" : undefined }}>
         <header className="top-nav">
           <div className="nav-left">
             <div className="nav-logo">S<span className="accent">YNC</span></div>
