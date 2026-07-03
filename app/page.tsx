@@ -4,77 +4,103 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 4000); // 4 seconds
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setFadeOut(true), 3600); // start fade
+    const t2 = setTimeout(() => setLoading(false), 4000); // hide after 4s
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   return (
-    <main style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f3f4f6", fontFamily: "Inter, Arial, Helvetica, sans-serif" }}>
-      <style>{`
-        .loader {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-        }
-        .sync {
-          font-size: 5rem;
-          font-weight: 800;
-          letter-spacing: 0.08em;
-          color: #111827;
-          -webkit-text-stroke: 0.5px rgba(0,0,0,0.05);
-          animation: fadeInOut 1.2s ease-in-out infinite;
-        }
-        @keyframes fadeInOut {
-          0% { opacity: 0; transform: scale(0.98); }
-          50% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; transform: scale(0.98); }
-        }
-        .card {
-          width: 420px;
-          max-width: calc(100% - 48px);
-          background: #ffffff;
-          border-radius: 12px;
-          box-shadow: 0 6px 24px rgba(16,24,40,0.08);
-          padding: 28px;
-        }
-        .heading {
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin-bottom: 12px;
-          color: #0f172a;
-        }
-        .sub { color: #475569; margin-bottom: 18px; }
-        .input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #e6eef8; margin-bottom: 12px; }
-        .actions { display:flex; gap:10px; margin-top:8px; }
-        .btn { flex:1; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
-        .btn.primary { background:#0f172a; color:white; }
-        .btn.ghost { background:transparent; border:1px solid #e2e8f0; color:#0f172a; }
-      `}</style>
-
-      {loading ? (
-        <div className="loader" aria-live="polite">
+    <div className="page-root">
+      {/* Loader overlay */}
+      <div className={`loader-overlay ${fadeOut ? "hidden" : ""}`} aria-hidden={!loading}>
+        <div className="loader-inner">
           <div className="sync">SYNC</div>
-        </div>
-      ) : (
-        <div className="card" role="main">
-          <div className="heading">Welcome back</div>
-          <div className="sub">Log in or create an account to continue to Sync.</div>
-
-          <label style={{ fontSize: 12, color: "#475569" }}>Email</label>
-          <input className="input" type="email" placeholder="you@company.com" />
-
-          <label style={{ fontSize: 12, color: "#475569" }}>Password</label>
-          <input className="input" type="password" placeholder="••••••••" />
-
-          <div className="actions">
-            <button className="btn primary">Login</button>
-            <button className="btn ghost">Sign up</button>
+          <div className="loader-bar" aria-hidden>
+            <div className="loader-progress" />
           </div>
         </div>
-      )}
-    </main>
+      </div>
+
+      {/* Main site content */}
+      <div className="site-content" role="main" aria-labelledby="hero-heading">
+        <header className="top-nav">
+          <div className="nav-left">
+            <div className="nav-logo">S<span className="accent">YNC</span></div>
+            <nav className="nav-links">
+              <a>How it works</a>
+              <a>Features</a>
+              <a>Community</a>
+              <a>About</a>
+            </nav>
+          </div>
+          <div className="nav-right">
+            <button className="btn ghost">Log in</button>
+            <button className="btn primary">Sign up</button>
+          </div>
+        </header>
+
+        <section className="hero">
+          <div className="hero-left">
+            <h1 id="hero-heading" className="hero-title">
+              Think alike.
+              <br />
+              <span className="highlight">Connect deeper.</span>
+            </h1>
+            <p className="hero-sub">On SYNC, you have to think like a stranger before you can talk. Match minds and form meaningful connections.</p>
+            <div className="hero-ctas">
+              <button className="btn primary large">Start Matching</button>
+              <button className="btn ghost large">See How It Works</button>
+            </div>
+            <div className="trust-row">
+              <div className="avatars">
+                <div className="avatar" />
+                <div className="avatar" />
+                <div className="avatar" />
+                <div className="avatar" />
+              </div>
+              <div className="trust-text">10,000+ minds already connected</div>
+            </div>
+          </div>
+
+          <div className="hero-right" aria-hidden>
+            <div className="visual">
+              {/* Placeholder neon illustration */}
+              <div className="brain-left" />
+              <div className="heartbeat" />
+              <div className="brain-right" />
+            </div>
+          </div>
+        </section>
+
+        <section className="features">
+          <div className="feature">
+            <div className="feature-icon">🧠</div>
+            <div className="feature-title">Mind Match Game</div>
+            <div className="feature-sub">Answer the same questions to unlock a match.</div>
+          </div>
+          <div className="feature">
+            <div className="feature-icon">✨</div>
+            <div className="feature-title">Personality Insights</div>
+            <div className="feature-sub">Discover how you compare to others.</div>
+          </div>
+          <div className="feature">
+            <div className="feature-icon">🔒</div>
+            <div className="feature-title">Safe & Private</div>
+            <div className="feature-sub">Your privacy and safety come first.</div>
+          </div>
+          <div className="feature">
+            <div className="feature-icon">🤝</div>
+            <div className="feature-title">Real Connections</div>
+            <div className="feature-sub">Meaningful conversations that actually matter.</div>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

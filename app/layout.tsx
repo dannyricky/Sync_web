@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Sync - Landing",
-  description: "Welcome to Sync",
+  description: "Think alike. Connect deeper.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
