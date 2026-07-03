@@ -1,65 +1,80 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 4000); // 4 seconds
+    return () => clearTimeout(t);
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f3f4f6", fontFamily: "Inter, Arial, Helvetica, sans-serif" }}>
+      <style>{`
+        .loader {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+        .sync {
+          font-size: 5rem;
+          font-weight: 800;
+          letter-spacing: 0.08em;
+          color: #111827;
+          -webkit-text-stroke: 0.5px rgba(0,0,0,0.05);
+          animation: fadeInOut 1.2s ease-in-out infinite;
+        }
+        @keyframes fadeInOut {
+          0% { opacity: 0; transform: scale(0.98); }
+          50% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(0.98); }
+        }
+        .card {
+          width: 420px;
+          max-width: calc(100% - 48px);
+          background: #ffffff;
+          border-radius: 12px;
+          box-shadow: 0 6px 24px rgba(16,24,40,0.08);
+          padding: 28px;
+        }
+        .heading {
+          font-size: 1.25rem;
+          font-weight: 700;
+          margin-bottom: 12px;
+          color: #0f172a;
+        }
+        .sub { color: #475569; margin-bottom: 18px; }
+        .input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #e6eef8; margin-bottom: 12px; }
+        .actions { display:flex; gap:10px; margin-top:8px; }
+        .btn { flex:1; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
+        .btn.primary { background:#0f172a; color:white; }
+        .btn.ghost { background:transparent; border:1px solid #e2e8f0; color:#0f172a; }
+      `}</style>
+
+      {loading ? (
+        <div className="loader" aria-live="polite">
+          <div className="sync">SYNC</div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-zinc-700/40 md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      ) : (
+        <div className="card" role="main">
+          <div className="heading">Welcome back</div>
+          <div className="sub">Log in or create an account to continue to Sync.</div>
+
+          <label style={{ fontSize: 12, color: "#475569" }}>Email</label>
+          <input className="input" type="email" placeholder="you@company.com" />
+
+          <label style={{ fontSize: 12, color: "#475569" }}>Password</label>
+          <input className="input" type="password" placeholder="••••••••" />
+
+          <div className="actions">
+            <button className="btn primary">Login</button>
+            <button className="btn ghost">Sign up</button>
+          </div>
         </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
