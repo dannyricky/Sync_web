@@ -20,26 +20,28 @@ export default function Home() {
 
   return (
     <div className="page-root">
-      {/* Loader overlay */}
-      <div className={`loader-overlay ${fadeOut ? "hidden" : ""}`} aria-hidden={!loading}>
-        <div className="loader-inner">
-          <div className="sync">SYNC</div>
+      {/* Loader overlay - only in DOM while loading */}
+      {loading && (
+        <div className={`loader-overlay ${fadeOut ? "hidden" : ""}`} aria-hidden={!loading}>
+          <div className="loader-inner">
+            <div className="sync">SYNC</div>
 
-          <div className="loader-bar" aria-hidden>
-            <div
-              className="loader-progress"
-              onAnimationEnd={() => {
-                setLoading(false);
-              }}
-            />
+            <div className="loader-bar" aria-hidden>
+              <div
+                className="loader-progress"
+                onAnimationEnd={() => {
+                  setLoading(false);
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <AuthModal
         open={authOpen}
         initialTab={authInitialTab}
-        onClose={() => setAuthOpen(false)}
+        onClose={() => { console.log('AuthModal: onClose'); setAuthOpen(false); }}
         onSubmitLogin={(data) => { console.log("login", data); setAuthOpen(false); }}
         onSubmitSignup={(data) => { console.log("signup", data); setAuthOpen(false); }}
       />
@@ -57,8 +59,26 @@ export default function Home() {
             </nav>
           </div>
           <div className="nav-right">
-            <button className="btn ghost" onClick={() => { setAuthInitialTab("login"); setAuthOpen(true); }}>Log in</button>
-            <button className="btn primary" onClick={() => { setAuthInitialTab("signup"); setAuthOpen(true); }}>Sign up</button>
+            <button
+              className="btn ghost"
+              onClick={() => {
+                console.log('Nav: Log in clicked');
+                setAuthInitialTab("login");
+                setAuthOpen(true);
+              }}
+            >
+              Log in
+            </button>
+            <button
+              className="btn primary"
+              onClick={() => {
+                console.log('Nav: Sign up clicked');
+                setAuthInitialTab("signup");
+                setAuthOpen(true);
+              }}
+            >
+              Sign up
+            </button>
           </div>
         </header>
 
@@ -71,7 +91,16 @@ export default function Home() {
             </h1>
             <p className="hero-sub">On SYNC, you have to think like a stranger before you can talk. Match minds and form meaningful connections.</p>
             <div className="hero-ctas">
-              <button className="btn primary large" onClick={() => { setAuthInitialTab("signup"); setAuthOpen(true); }}>Start Matching</button>
+              <button
+                className="btn primary large"
+                onClick={() => {
+                  console.log('Hero: Start Matching clicked');
+                  setAuthInitialTab("signup");
+                  setAuthOpen(true);
+                }}
+              >
+                Start Matching
+              </button>
               <button className="btn ghost large">See How It Works</button>
             </div>
             <div className="trust-row">
