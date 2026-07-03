@@ -4,41 +4,42 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // start fade slightly before the progress finishes so we get a smooth crossfade
-    const t1 = setTimeout(() => setFadeOut(true), 3600); // start fade at 3.6s
     // fallback: if animationend doesn't fire for any reason, hide after 4.2s
     const fallback = setTimeout(() => setLoading(false), 4200);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(fallback);
-    };
+    return () => clearTimeout(fallback);
   }, []);
 
   return (
     <div className="page-root">
       {/* Loader overlay */}
-      <div className={`loader-overlay ${fadeOut ? "hidden" : ""}`} aria-hidden={!loading}>
-        <div className="loader-inner">
-          <div className="sync">SYNC</div>
+      {loading && (
+        <div className="loader-overlay" role="status" aria-live="polite" aria-label="Loading">
+          <div className="loader-inner">
+            <div className="sync">SYNC</div>
 
-          <div className="loader-bar" aria-hidden>
-            {/* animate this element from left to right over 4s */}
-            <div
-              className="loader-progress"
-              onAnimationEnd={() => {
-                // animation finished -> show content
-                setLoading(false);
-              }}
-            />
+            <div className="loader-bar" aria-hidden>
+              {/* animate this element from left to right over 4s */}
+              <div
+                className="loader-progress"
+                onAnimationEnd={() => {
+                  // animation finished -> show content
+                  setLoading(false);
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Main site content */}
-      <div className="site-content" role="main" aria-labelledby="hero-heading" style={{ display: loading ? "none" : undefined }}>
+      {/* Main site content kept in DOM but hidden while loading to avoid reflow */}
+      <div
+        className="site-content"
+        role="main"
+        aria-labelledby="hero-heading"
+        style={{ display: loading ? "none" : undefined }}
+      >
         <header className="top-nav">
           <div className="nav-left">
             <div className="nav-logo">S<span className="accent">YNC</span></div>

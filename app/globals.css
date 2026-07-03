@@ -20,12 +20,13 @@ body{
 
 /* Loader */
 .loader-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(7,6,10,1) 0%, rgba(13,9,20,1) 100%);z-index:9999;transition:opacity .45s ease,visibility .45s ease}
-.loader-overlay.hidden{opacity:0;visibility:hidden}
 .loader-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
-.sync{font-size:64px;font-weight:800;letter-spacing:0.12em;color:var(--accent);text-shadow:0 8px 32px rgba(139,92,246,0.16), 0 0 48px rgba(236,72,153,0.12);animation:neon 1.2s ease-in-out infinite}
-@keyframes neon{0%{opacity:0;transform:scale(.98)}50%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.98)}}
-.loader-bar{width:240px;height:6px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
-.loader-progress{height:100%;width:72%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px;box-shadow:0 6px 20px rgba(139,92,246,0.18)}
+.sync{font-size:64px;font-weight:800;letter-spacing:0.12em;color:var(--accent);text-shadow:0 8px 32px rgba(139,92,246,0.16), 0 0 48px rgba(236,72,153,0.12)}
+
+/* animate progress left -> right over 4s */
+.loader-bar{width:320px;height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
+.loader-progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:999px;box-shadow:0 6px 20px rgba(139,92,246,0.18);animation:progressFill 4s linear forwards}
+@keyframes progressFill{from{width:0%}to{width:100%}}
 
 /* Top nav */
 .top-nav{display:flex;align-items:center;justify-content:space-between;padding:24px 40px}
