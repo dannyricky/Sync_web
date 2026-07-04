@@ -19,8 +19,23 @@ export default function Home() {
 
   function openAuthSection(tab: "login" | "signup") {
     setAuthInitialTab(tab);
-    // give React a tick to render the section, then scroll to it
-    setTimeout(() => authRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+
+    // update the URL hash so anchor navigation works if JS isn't ready
+    if (typeof window !== "undefined") {
+      try {
+        window.location.hash = "auth-section";
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // give React a tick to render the section, then scroll to it and focus the first input
+    setTimeout(() => {
+      const el = authRef.current ?? document.getElementById("auth-section");
+      el?.scrollIntoView({ behavior: "smooth" });
+      const firstInput = el?.querySelector("input") as HTMLInputElement | null;
+      firstInput?.focus?.();
+    }, 100);
   }
 
   function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
