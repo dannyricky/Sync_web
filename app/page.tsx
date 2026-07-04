@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import AuthModal from "./components/AuthModal";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
   const [authInitialTab, setAuthInitialTab] = useState<"login" | "signup">("login");
+  const [showAuthSection, setShowAuthSection] = useState(false);
+  const authRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const t1 = setTimeout(() => setFadeOut(true), 3600);
@@ -18,17 +18,43 @@ export default function Home() {
     };
   }, []);
 
-  // Debug: automatically open the modal shortly after the loader finishes
+  // Debug: automatically open the auth section shortly after the loader finishes
   useEffect(() => {
     if (!loading) {
       const t = setTimeout(() => {
-        console.log("Debug: auto-opening auth modal for testing");
+        console.log("Debug: auto-opening auth section for testing");
         setAuthInitialTab("signup");
-        setAuthOpen(true);
+        setShowAuthSection(true);
+        authRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 200);
       return () => clearTimeout(t);
     }
   }, [loading]);
+
+  function openAuthSection(tab: "login" | "signup") {
+    setAuthInitialTab(tab);
+    setShowAuthSection(true);
+    // give React a tick to render the section, then scroll to it
+    setTimeout(() => authRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+  }
+
+  function handleLoginSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const email = data.get("email");
+    const password = data.get("password");
+    console.log("login", { email, password });
+    // TODO: replace with real login logic
+  }
+
+  function handleSignupSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const email = data.get("email");
+    const password = data.get("password");
+    console.log("signup", { email, password });
+    // TODO: replace with real signup logic
+  }
 
   return (
     <div className="page-root">
@@ -50,14 +76,6 @@ export default function Home() {
         </div>
       )}
 
-      <AuthModal
-        open={authOpen}
-        initialTab={authInitialTab}
-        onClose={() => { console.log('AuthModal: onClose'); setAuthOpen(false); }}
-        onSubmitLogin={(data) => { console.log("login", data); setAuthOpen(false); }}
-        onSubmitSignup={(data) => { console.log("signup", data); setAuthOpen(false); }}
-      />
-
       {/* Main site content */}
       <div id="site-content" className="site-content" role="main" aria-labelledby="hero-heading" style={{ display: loading ? "none" : undefined }}>
         <header className="top-nav">
@@ -75,8 +93,7 @@ export default function Home() {
               className="btn ghost"
               onClick={() => {
                 console.log('Nav: Log in clicked');
-                setAuthInitialTab("login");
-                setAuthOpen(true);
+                openAuthSection("login");
               }}
             >
               Log in
@@ -85,8 +102,7 @@ export default function Home() {
               className="btn primary"
               onClick={() => {
                 console.log('Nav: Sign up clicked');
-                setAuthInitialTab("signup");
-                setAuthOpen(true);
+                openAuthSection("signup");
               }}
             >
               Sign up
@@ -107,8 +123,7 @@ export default function Home() {
                 className="btn primary large"
                 onClick={() => {
                   console.log('Hero: Start Matching clicked');
-                  setAuthInitialTab("signup");
-                  setAuthOpen(true);
+                  openAuthSection("signup");
                 }}
               >
                 Start Matching
@@ -155,6 +170,59 @@ export default function Home() {
             <div className="feature-icon">🤝</div>
             <div className="feature-title">Real Connections</div>
             <div className="feature-sub">Meaningful conversations that actually matter.</div>
+          </div>
+        </section>
+
+        {/* Inline auth section that users are scrolled to */}
+        <section id="auth-section" ref={authRef} className="auth-section" aria-labelledby="auth-heading" style={{ padding: '48px 0' }}>
+          <h2 id="auth-heading">Join SYNC</h2>
+          <div className="auth-tabs">
+            <button
+              className={`tab ${authInitialTab === 'login' ? 'active' : ''}`}
+              onClick={() => setAuthInitialTab('login')}
+            >
+              Log in
+            </button>
+            <button
+              className={`tab ${authInitialTab === 'signup' ? 'active' : ''}`}
+              onClick={() => setAuthInitialTab('signup')}
+            >
+              Sign up
+            </button>
+          </div>
+
+          <div className="auth-panels">
+            {authInitialTab === 'login' ? (
+              <form className="auth-form" onSubmit={handleLoginSubmit} aria-label="Login form">
+                <label>
+                  Email
+                  <input name="email" type="email" required />
+                </label>
+                <label>
+                  Password
+                  <input name="password" type="password" required />
+                </label>
+                <div className="auth-actions">
+                  <button type="submit" className="btn primary">Log in</button>
+                  <button type="button" className="btn ghost" onClick={() => openAuthSection('signup')}>Create Account</button>
+                </div>
+              </form>
+            ) : (
+              <form className="auth-form" onSubmit={handleSignupSubmit} aria-label="Signup form">
+                <label>
+                  Email
+                  <input name="email" type="email" required />
+                </label>
+                <label>
+                  Password
+                  <input name="password" type="password" required />
+                </label>
+                <div className="auth-actions">
+                  <button type="submit" className="btn primary">Sign up</button>
+                  <button type="button" className="btn ghost" onClick={() => openAuthSection('login')}>Have an account?</button>
+                </div>
+              </form>
+            )}
           </div>
         </section>
 
