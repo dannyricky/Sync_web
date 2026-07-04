@@ -6,7 +6,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [authInitialTab, setAuthInitialTab] = useState<"login" | "signup">("login");
-  const [showAuthSection, setShowAuthSection] = useState(false);
   const authRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -18,22 +17,8 @@ export default function Home() {
     };
   }, []);
 
-  // Debug: automatically open the auth section shortly after the loader finishes
-  useEffect(() => {
-    if (!loading) {
-      const t = setTimeout(() => {
-        console.log("Debug: auto-opening auth section for testing");
-        setAuthInitialTab("signup");
-        setShowAuthSection(true);
-        authRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 200);
-      return () => clearTimeout(t);
-    }
-  }, [loading]);
-
   function openAuthSection(tab: "login" | "signup") {
     setAuthInitialTab(tab);
-    setShowAuthSection(true);
     // give React a tick to render the section, then scroll to it
     setTimeout(() => authRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   }
