@@ -10,7 +10,11 @@ export default function Home() {
 
   useEffect(() => {
     const t1 = setTimeout(() => setFadeOut(true), 3600);
-    const fallback = setTimeout(() => setLoading(false), 4200);
+    // shorter fallback so the loader can't block the page for long if animation doesn't fire
+    const fallback = setTimeout(() => {
+      console.debug("Loader fallback fired — forcing loading=false");
+      setLoading(false);
+    }, 1000);
     return () => {
       clearTimeout(t1);
       clearTimeout(fallback);
@@ -35,6 +39,7 @@ export default function Home() {
       el?.scrollIntoView({ behavior: "smooth" });
       const firstInput = el?.querySelector("input") as HTMLInputElement | null;
       firstInput?.focus?.();
+      console.debug("openAuthSection: scrolled to auth section and focused first input");
     }, 100);
   }
 
@@ -68,6 +73,7 @@ export default function Home() {
               <div
                 className="loader-progress"
                 onAnimationEnd={() => {
+                  console.debug("Loader animationend fired — setting loading=false");
                   setLoading(false);
                 }}
               />
